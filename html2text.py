@@ -197,7 +197,14 @@ class HTML2Text(HTMLParser.HTMLParser):
         self.ul_item_mark = '*'
         self.emphasis_mark = '_'
         self.strong_mark = '**'
+        self.real_base_url = ''
 
+        # quick and dirty way to get base url
+        if baseurl.startswith('http://') or baseurl.startswith('https://'):
+            idx = baseurl.rfind('/') + 1
+            self.real_base_url = baseurl[:idx]
+            # print self.real_base_url
+            
         if out is None:
             self.out = self.outtextf
         else:
@@ -500,7 +507,7 @@ class HTML2Text(HTMLParser.HTMLParser):
                 self.o("![" + escape_md(alt) + "]")
 
                 if self.inline_links:
-                    self.o("(" + escape_md(attrs['href']) + ")")
+                    self.o("(" + self.real_base_url + escape_md(attrs['href']) + ")")
                 else:
                     i = self.previousIndex(attrs)
                     if i is not None:
